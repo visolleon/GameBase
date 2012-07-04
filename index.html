@@ -1,0 +1,132 @@
+﻿﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Game Engine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <style>
+      html, body{
+        margin:0;
+        padding:0;
+      }
+    </style>
+</head>
+<body>
+    <canvas id="maingame" height="400" width="300"></canvas>
+    <script src="js/GameBase_Dev.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var newGame = new Game({
+            id : 'maingame',
+            success : function () {
+                // do something...
+            },
+            error : function () {
+                alert('Your browser not support canvas.');
+            }
+        });
+        newGame.Start();
+
+        var sound = new Sound('sound/bg.m4a');
+        sound.Loop = true;
+        sound.Play();
+
+        window.onblur = function(e){
+            sound.Pause();
+        };
+
+        window.onfocus = function(){
+            sound.Play();
+        };
+
+        Test1();
+        Test2();
+        Test3();
+
+        document.getElementById('maingame').onclick = function(){
+            if(newGame.IsFullScreen){
+                newGame.CancelFullScreen();
+            }
+            else{
+                newGame.FullScreen();
+            }
+        };
+
+        function Test3(){
+            var rect = new Rect(-25, -50, 50, 100, "#FF0000", "#00FF00", 4);
+            rect.Translate = [100, 140];
+            newGame.Add(rect);
+            (function () {
+                var i = 1;
+                setInterval(function(){
+                    rect.Rotate = i++ * 2 * Math.PI / 180;
+                }, 30);
+            })();
+
+            var arc = new Arc(160, 180, 50, 0, Math.PI * 2, true, "#ffFF00", "#000", 8);
+            arc.Alpha = .6;
+            newGame.Add(arc);
+
+            var line = new Line(20, 60, 230, 60, "#0000FF", 5);
+            var line2 = new Line(20, 65, 230, 65, "#FF00FF", 5);
+            var line3 = new Line(20, 80, 230, 80, "#00FF00", 5);
+            line3.Alpha = .6;
+            newGame.Add(line);
+            newGame.Add(line2);
+            newGame.Add(line3);
+
+            var rect2 = new Rect(-25, -25, 50, 50, "#FFFF00", "#000", 5);
+            rect2.Alpha = .6;
+            rect2.Translate = [220,260];
+            newGame.Add(rect2);
+            (function () {
+                var i = 1;
+                setInterval(function(){
+                    rect2.Rotate = i++ * 2 * Math.PI / 180;
+                }, 30);
+            })();
+
+            var polygon = new Polygon([[50, 200], [100, 150], [150, 150], [200, 200], [150, 250], [100, 250]], "#00FF00", "#000", 2);
+            polygon.Translate = [0, 120];
+            newGame.Add(polygon);
+        }
+
+        function Test2(){
+            var label = new Label("TEST test 1234");
+            label.Position = [20, 100];
+            label.Font = '30px Arial';
+            newGame.Add(label);
+        }
+
+        function Test1(){
+            var img = new Bitmap('images/html5.png');
+            img.zIndex = 2;
+            img.Position = [20, 100];
+            newGame.Add(img);
+        
+            var no = 1, isplus = true;
+            setInterval(function(){
+                if(no % 20 == 0) isplus = !isplus;
+                
+                var step = 0.01
+                if(isplus){
+                    img.Scale[0] += step;
+                    img.Scale[1] += step;
+                    img.Alpha -= 0.05;
+                }
+                else{
+                    img.Scale[0] -= step;
+                    img.Scale[1] -= step;
+                    img.Alpha += 0.05;
+                }
+                no++;
+            }, 30);
+        }
+
+        var fps = new Label('FPS:');
+        fps.Position = [100, 20];
+        newGame.Add(fps);
+        setInterval(function(){
+            fps.Text = "FPS: " + newGame.FPS;
+        }, 500);
+    </script>
+</body>
+</html>
